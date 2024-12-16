@@ -1,0 +1,43 @@
+{
+  "name": "my-step-go",
+  "version": "1.0.0",
+  "main": "./out/main/index.js",
+  "author": "example.com",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "dependencies": {
+    "@amap/amap-jsapi-loader": "^1.0.1",
+    "@amap/amap-jsapi-types": "^0.0.15",
+    "@capacitor/android": "^6.2.0",
+    "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0",
+    "@element-plus/icons-vue": "^2.3.1",
+    "@vueuse/components": "^11.2.0",
+    "@vueuse/core": "^11.2.0",
+    "axios": "^1.7.7",
+    "element-plus": "^2.8.7",
+    "mockjs": "^1.1.0",
+    "path": "^0.12.7",
+    "pinia": "^2.2.6",
+    "vue-router": "^4.4.5",
+    "vuex": "^4.0.2"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.10.3",
+    "@types/node": "^20.14.8",
+    "@vitejs/plugin-vue": "^5.0.5",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.26.0",
+    "prettier": "^3.3.2",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.1",
+    "vue": "^3.4.30",
+    "vue-tsc": "^2.0.22"
+  }
+}
