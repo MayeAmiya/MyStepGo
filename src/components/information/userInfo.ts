@@ -1,4 +1,4 @@
-import { Groups } from './tagInfo/groupInfo'
+import { Groups } from './groupInfo'
 import { pointInfo } from './pointInfo'
 
 class KeywordsList {

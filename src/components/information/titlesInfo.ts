@@ -46,29 +46,30 @@ class TitleInfos {
     creater: number,
     content: string
   ): Promise<void> {
-    try {
-      const response = await fetch('https://example.com/api/titles', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ father, pointid, title, creater, content })
-      })
-      const data = await response.json()
-      const newTitle = new TitleInfo(
-        data.father,
-        data.pointid,
-        data.titleid,
-        data.title,
-        data.creater,
-        data.date,
-        data.content,
-        data.lastedit
-      )
-      this.titleInfoList.push(newTitle)
-    } catch (error) {
-      console.error('Error creating title:', error)
-    }
+    //   try {
+    //     const response = await fetch('https://example.com/api/titles', {
+    //       method: 'POST',
+    //       headers: {
+    //         'Content-Type': 'application/json'
+    //       },
+    //       body: JSON.stringify({ father, pointid, title, creater, content })
+    //     })
+    //     const data = await response.json()
+    //     const newTitle = new TitleInfo(
+    //       data.father,
+    //       data.pointid,
+    //       data.titleid,
+    //       data.title,
+    //       data.creater,
+    //       data.date,
+    //       data.content,
+    //       data.lastedit
+    //     )
+    //     this.titleInfoList.push(newTitle)
+    //   } catch (error) {
+    //     console.error('Error creating title:', error)
+    //   }
+    this.titleInfoList.push(new TitleInfo(father, pointid, this.titleInfoList.length + 1, title, creater, new Date().toLocaleDateString(), content, new Date().toLocaleDateString()))
   }
 
   async find(father: number): Promise<TitleInfo[]> {

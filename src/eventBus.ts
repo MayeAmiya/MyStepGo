@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia'
 import { pointInfos } from './components/information/pointInfo'
-import { Groups } from './components/information/tagInfo/groupInfo'
+import { Groups } from './components/information/groupInfo'
 import { User } from './components/information/userInfo'
-import { MapDatas } from './components/information/tagInfo/mapInfo'
+import { InfoInfos } from './components/information/infoInfo'
 export const useGlobalStore = defineStore('counter', {
   state: () => {
     const functions = new Map<string, (...args: unknown[]) => unknown>() // 函数集
     const points = new pointInfos() // 点集
     const groups = new Groups() // 组集
     const user = new User() // 用户信息
-    const mapDatas = new MapDatas() // 地图集
+    const informaitons = new InfoInfos() // 信息集
     const Global = {
       functions,
-      mapDatas,
       points,
       groups,
+      informaitons,
       user
     }
     return { Global }

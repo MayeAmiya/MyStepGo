@@ -21,7 +21,7 @@
         </div>
         <div style="flex: 1; display: flex; align-items: center">
           <el-button style="margin-left: auto; color: black" @click="addNewOptionFromInput">
-            Add New Option
+            Add New Keyword Candidate
           </el-button>
         </div>
       </div>

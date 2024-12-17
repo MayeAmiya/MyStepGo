@@ -17,12 +17,16 @@ const selectedKeywords = ref(globalStore.Global.user.keywordsList.selected)
 
 const openPane = ref(globalStore.Global.functions.get('showDrawer'))
 
-const currentMap = ref(globalStore.Global.mapDatas.top())
+const currentMap = ref(globalStore.Global.points.top())
+const pointsInfo = ref(globalStore.Global.user.currentInfo.pointsInfos)
 
-globalStore.$subscribe(() => {
+globalStore.$subscribe(async () => {
   // 重绘标签
   const newKeywords = globalStore.Global.user.keywordsList.selected
-  console.log(globalStore.Global.mapDatas.top())
+  pointsInfo.value = await globalStore.Global.points.find(
+    currentMap.value
+  )
+  console.log(globalStore.Global.points.top())
   console.log(currentMap.value)
   if (selectedKeywords.value !== newKeywords) {
     selectedKeywords.value = globalStore.Global.user.keywordsList.selected
@@ -31,8 +35,8 @@ globalStore.$subscribe(() => {
       addMarkers(AMap)
     }
   }
-  if (currentMap.value !== globalStore.Global.mapDatas.top()) {
-    currentMap.value = globalStore.Global.mapDatas.top()
+  if (currentMap.value !== globalStore.Global.points.top()) {
+    currentMap.value = globalStore.Global.points.top()
     console.log('Map changed')
     if (map) {
       map.clearMap()
@@ -45,24 +49,20 @@ globalStore.$subscribe(() => {
 // 根据currentMap的值，初始化地图
 
 const initMap = async () => {
-  const mapInfo = await globalStore.Global.mapDatas.find(currentMap.value)
+  const mapInfo = await globalStore.Global.points.findPointInfo(currentMap.value)
   if (!mapInfo) {
     console.error('Map data not found')
     return
   } else {
     console.log('Map data found')
+    console.log(mapInfo)
   }
 
-  // const { location, region } = mapInfo
   const { location } = mapInfo
-
-  // const bounds = {
-  //   southwest: { lng: region[0], lat: region[1] },
-  //   northeast: { lng: region[2], lat: region[3] }
-  // }
 
   if (location) {
     map.setCenter(location)
+
     console.log(location)
     const { region } = mapInfo
     const regionArray = []
@@ -88,15 +88,12 @@ const initMap = async () => {
 
 const addMarkers = async (AMap) => {
   // 根据currentMap的值，初始化点
-  globalStore.Global.user.currentInfo.pointsInfos = await globalStore.Global.points.find(
-    currentMap.value
-  )
-
-  const pointsInfo = globalStore.Global.user.currentInfo.pointsInfos
-  console.log(pointsInfo)
   // 启动容器时根据容器内标签列表初始化关键词列表
   // 根据关键词列表选择显示标签
-  pointsInfo.forEach((point) => {
+  pointsInfo.value = await globalStore.Global.points.find(
+    currentMap.value
+  )
+  pointsInfo.value.forEach((point) => {
     if (
       selectedKeywords.value.length === 0 ||
       selectedKeywords.value.some((keyword) => point.keywords.includes(keyword))
@@ -119,7 +116,15 @@ const addMarkers = async (AMap) => {
   })
 }
 
-onMounted(() => {
+const setCenter = async (lnglat) => {
+  map.setCenter(lnglat)
+}
+globalStore.setFunction('setCenter', setCenter)
+
+onMounted(async () => {
+  pointsInfo.value = await globalStore.Global.points.find(
+    currentMap.value
+  )
   window._AMapSecurityConfig = {
     securityJsCode: '2c30c6b1b049f794e650e0bffd49858e'
   }
@@ -173,9 +178,9 @@ const PolygonEditor = () => {
       button.style.cursor = 'pointer'
       button.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)'
       button.addEventListener('click', () => {
-        polygonEditor.clearAdsorbPolygons()
         polygonEditor.close()
         document.getElementById('container').removeChild(button)
+
       })
       document.getElementById('container').appendChild(button)
 
