@@ -8,7 +8,7 @@ class pointInfo {
   keywords: string[] // 关键词
   updateDate: string // 更新日期
   region: number[] // 区域边界集 围成一个区域
-  location: [number, number] // 位置
+  location: number[] // 位置
 
   constructor(
     id: number,
@@ -55,6 +55,10 @@ class pointInfos {
     this.stack.push(index)
   }
 
+  exit(): void {
+    this.stack.pop()
+  }
+
   constructor() {
     this.pointInfoList = []
     this.stack = []
@@ -70,7 +74,7 @@ class pointInfos {
     info: number[],
     keywords: string[],
     region: number[], // 区域边界集 围成一个区域
-    location: [number, number]
+    location: number[]
   ): Promise<void> {
     // try {
     //   const response = await fetch('https://example.com/api/pointInfo', {

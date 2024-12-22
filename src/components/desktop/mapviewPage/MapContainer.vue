@@ -121,7 +121,7 @@ const setCenter = async (lnglat) => {
 }
 globalStore.setFunction('setCenter', setCenter)
 
-onMounted(async () => {
+async function onMountedF() {
   pointsInfo.value = await globalStore.Global.points.find(
     currentMap.value
   )
@@ -153,7 +153,12 @@ onMounted(async () => {
     .catch((e) => {
       console.log(e)
     })
+}
+
+onMounted(async () => {
+  await onMountedF()
 })
+globalStore.setFunction('onMounted', onMountedF)
 
 onUnmounted(() => {
   if (map) {
@@ -205,7 +210,7 @@ const handleMapClick = (e) => {
 const waitForMapClick = () => {
   return new Promise((resolve) => {
     const handleClick = (e) => {
-      const lnglat = e.lnglat.getLng() + ',' + e.lnglat.getLat()
+      const lnglat = [e.lnglat.getLng(), e.lnglat.getLat()]
       map.off('click', handleClick)
       resolve(lnglat)
     }

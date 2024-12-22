@@ -94,7 +94,6 @@ const openDrawer = () => {
 
 function handleClose() {
   showDrawer.value = false
-  console.log('Drawer closed')
   globalStore.Global.user.currentInfo.infType = 'map'
 }
 

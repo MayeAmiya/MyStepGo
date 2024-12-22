@@ -4,11 +4,13 @@ class InfoInfo {
     id: number;
     type: string;
     infoString: string;
+    infos: number[];
 
-    constructor(id: number, type: string, infoString: string) {
+    constructor(id: number, type: string, infoString: string, infos: number[]) {
         this.id = id;
         this.type = type;
         this.infoString = infoString;
+        this.infos = infos;
     }
 }
 
@@ -18,6 +20,21 @@ class InfoInfos {
     constructor() {
         this.infoInfoList = [];
         this.initializeInfoInfoList();
+    }
+
+    followInfo(id: number, info: number): void {
+        this.infoInfoList.forEach((infoInfo) => {
+            if (infoInfo.id === id) {
+                infoInfo.infos.push(info);
+            }
+        });
+    }
+    clearInfo(id: number): void {
+        this.infoInfoList.forEach((infoInfo) => {
+            if (infoInfo.id === id) {
+                infoInfo.infos = [];
+            }
+        });
     }
 
     async createInfoInfo(type: string, infoString: string): Promise<void> {
@@ -33,11 +50,11 @@ class InfoInfos {
         // } catch (error) {
         //     console.error(error);
         // }
-        this.infoInfoList.push(new InfoInfo(this.infoInfoList.length + 1, type, infoString));
+        this.infoInfoList.push(new InfoInfo(this.infoInfoList.length + 1, type, infoString, []));
     }
 
     async find(type: string): Promise<InfoInfo> {
-        const infoInfoTemp = new InfoInfo(0, '', '');
+        const infoInfoTemp = new InfoInfo(0, '', '', []);
         // try {
         //     const response = await axios.get(`https://example.com/api/infoInfo?type=${type}`);
         //     const data = response.data;
@@ -51,6 +68,7 @@ class InfoInfos {
                 infoInfoTemp.id = infoInfo.id;
                 infoInfoTemp.type = infoInfo.type;
                 infoInfoTemp.infoString = infoInfo.infoString;
+                infoInfoTemp.infos = infoInfo.infos;
             }
         });
         return infoInfoTemp;

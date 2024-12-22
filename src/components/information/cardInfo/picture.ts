@@ -2,18 +2,15 @@ class picture {
     index: number = -1;
     infomationType: string = "image";
     imageUrl: string;
-    description: string;
 
-    constructor(imageUrl: string, description: string) {
+    constructor(imageUrl: string) {
         this.imageUrl = imageUrl;
-        this.description = description;
     }
 
     async uploadPicture(): Promise<boolean> {
         const data = {
             index: this.index,
             imageUrl: this.imageUrl,
-            description: this.description,
         };
 
         fetch('https://your-server-endpoint.com/upload', {

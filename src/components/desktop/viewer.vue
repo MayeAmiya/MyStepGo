@@ -21,9 +21,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { defineProps } from 'vue'
-import infPane from './infviewPage/infPane.vue'
 import pointPane from './infviewPage/pointsPane.vue'
 import titlePane from './infviewPage/titlesPane.vue'
+import infPane from './infviewPage/contentPane.vue'
 const activeIndex = ref('0')
 const curretlyComponent = ref<typeof infPane | typeof pointPane | typeof titlePane | null>(null)
 curretlyComponent.value = infPane

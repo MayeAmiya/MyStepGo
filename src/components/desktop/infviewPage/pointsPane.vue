@@ -8,6 +8,8 @@
         </el-button>
         <el-button v-if="!create && globalStore.Global.user.currentInfo.infType == 'points' && nextable"
           @click="enterPoint" type="primary">Enter the Point Space</el-button>
+        <el-button v-if="!create && globalStore.Global.user.currentInfo.infType != 'points'" @click="exitPoint"
+          type="primary">Leave the Point Space</el-button>
         <el-button v-if="!create && globalStore.Global.user.currentInfo.infType != 'points'" @click="changePoint"
           type="primary">Change the Point Information</el-button>
         <div v-if="create" type="primary">
@@ -19,7 +21,7 @@
               <el-switch v-model="newPoint.type" active-text="Open" inactive-text="Close" />
             </el-form-item>
             <el-form-item label="Location">
-              <p>Location: {{ newPoint.location }}</p>
+              <p>{{ newPoint.location }}</p>
               <el-button @click="choosePoint">Choose Location</el-button>
               <el-button @click="createSpace">Create Point Space</el-button>
             </el-form-item>
@@ -60,6 +62,7 @@ const globalStore = useGlobalStore()
 const pointPane = ref<HTMLElement | null>(null)
 const points = ref<pointInfo[]>(globalStore.Global.user.currentInfo.pointsInfos)
 const infType = ref(globalStore.Global.user.currentInfo.infType)
+
 const nextable = ref(false)
 globalStore.$subscribe(async () => {
   nextable.value = false
@@ -83,10 +86,22 @@ async function enterPoint() {
   iteratePoints()
 }
 
-import { text } from "../../information/cardInfo/text"
+async function exitPoint() {
+  console.log('exitPoint')
+  globalStore.Global.points.exit()
+  const index = globalStore.Global.user.currentInfo.mapIndex
+  globalStore.Global.user.currentInfo.mapIndex = index
+  iteratePoints()
+  const addMarkers = globalStore.Global.functions.get('onMountedF')
+  if (addMarkers) {
+    addMarkers()
+  }
+}
+
+import { textdata } from "../../information/cardInfo/text"
 async function handleEnter() {
-  const textTemp = new text(newPoint.value.input)
-  if (await textTemp.createText()) {
+  const textTemp = new textdata(newPoint.value.input)
+  if (await textTemp.uploadText()) {
     newPoint.value.information.push(textTemp.index)
   }
 }
@@ -131,8 +146,8 @@ const newPoint = ref({
   information: [] as number[],
   type: false,
   keywords: [] as string[],
-  location: [0, 0] as [number, number],
-  Poly: ref<Array<number>>([])
+  location: ref<number[]>([]),
+  Poly: ref<number[]>([])
 })
 
 async function choosePoint() {
@@ -140,17 +155,22 @@ async function choosePoint() {
   if (closeDrawer) {
     closeDrawer()
   }
-  const tempPoint = ref<Array<number>>([])
+  const tempPoint = ref<number[]>([])
   const waitForMapClick = globalStore.Global.functions.get('waitForMapClick')
   if (waitForMapClick) {
-    tempPoint.value = (await waitForMapClick()) as Array<number>
+    const result = await waitForMapClick();
+    if (Array.isArray(result)) {
+      tempPoint.value = result.map(Number);
+    } else {
+      console.error('waitForMapClick did not return an array');
+    }
   }
   const openDrawer = globalStore.Global.functions.get('openDrawer')
   if (openDrawer) {
     openDrawer()
   }
 
-  newPoint.value.location = tempPoint.value as [number, number]
+  newPoint.value.location = tempPoint.value
 }
 
 async function addPoint() {
@@ -162,7 +182,7 @@ async function addPoint() {
     console.log('location is empty')
     return
   } else {
-    newPoint.value.location = [newPoint.value.location[0], newPoint.value.location[1]]
+    newPoint.value.location = newPoint.value.location
   }
   await globalStore.Global.points.createPointInfo(
     newPoint.value.type.toString(),
@@ -184,6 +204,10 @@ async function addPoint() {
     globalStore.Global.user.currentInfo.mapIndex
   )
   iteratePoints()
+  const addMarkers = globalStore.Global.functions.get('onMountedF')
+  if (addMarkers) {
+    addMarkers()
+  }
 }
 
 function clearPoint() {
@@ -191,7 +215,8 @@ function clearPoint() {
   newPoint.value.title = ''
   newPoint.value.information = []
   newPoint.value.keywords = []
-  newPoint.value.location = [0, 0]
+  newPoint.value.location = []
+  newPoint.value.Poly = []
 }
 
 async function iteratePoints() {
@@ -250,6 +275,7 @@ async function iteratePoints() {
         pointElement.addEventListener('click', () => {
           const setCenter = globalStore.Global.functions.get('setCenter')
           if (setCenter) {
+            console.log(point)
             setCenter(point.location)
           }
           const closeDrawer = globalStore.Global.functions.get('handleClose')

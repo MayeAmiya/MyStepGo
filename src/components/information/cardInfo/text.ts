@@ -1,11 +1,11 @@
-class text {
+class textdata {
   index: number = -1;
   infomationType: string = "text";
   context: string;
   constructor(context: string) {
     this.context = context;
   }
-  async createText(): Promise<boolean> {
+  async uploadText(): Promise<boolean> {
     const data = {
       index: this.index,
       infomationType: this.infomationType,
@@ -33,4 +33,4 @@ class text {
   }
 }
 
-export { text }
+export { textdata }
